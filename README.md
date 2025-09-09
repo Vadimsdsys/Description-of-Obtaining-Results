@@ -122,28 +122,25 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 1. Попросить в лаборатории обновить штамп (чтобы заказ попал в метод `RC_GetInquiriesJournal`)
 2. В таблице `TREAT` удалить дату в `LISTIMESTAMP`, чтобы мы смогли его скачать
 
----
 
-### Остальные лаборатории
-
-**LisInfoclinica.dll:**
+### LisInfoclinica.dll:
 - ДаВинчиЛаб (ЛП)
 - РДЛ (ЛП)
 
 Данные лаборатории работают на базе МИС Инфоклиника и соответсвенно парсинг получение у них как и в клинике. 
  
 
-**Morfolab.dll:**
+### Morfolab.dll:
 - Морфолаб (ЛП)
 
 Лаборатория не работает. 
 
-**Litex.dll:**
+### Litex.dll:
 - Литех (ЛП)
 
 В процессе перехода на альфалаб. 
 
-**bion.dll:**
+### bion.dll:
 - БИОН (ЛП)
 
 **Процесс:**  
@@ -160,7 +157,7 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 2. В таблице `TREAT` удалить дату в `LISTIMESTAMP`, чтобы мы смогли его скачать.  
 
 
-**Gemotest_soap.dll:**
+### Gemotest_soap.dll:
 - Гемотест SOAP (ЛП)  
 
 **Процесс:**    
@@ -189,7 +186,7 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 Для повторного получение результата нужно просто открыть наряд в `treat`.  
 
 
-**GemoHelp.dll:**
+### GemoHelp.dll:
 - Гемохелп (ЛП)
 
 **Процесс:**     
@@ -211,16 +208,12 @@ https://gost-64105.infoclinica.lan/v1/order-detail?access-token=PDCLPeYTI0M$AaBi
 
 Для повторного получения результатов можно изменить дату в `filial_contr_links.LSSTARTDATE`  
 
-**innovasystems.dll:**
+### innovasystems.dll:
 - ДНК-Диагностика (ЛП)
 
-**dcli.dll:**
+### dcli.dll:
 - ДЦЛИ (ЛП) (2 записи)
 
-**LisNacph.dll:**
+### LisNacph.dll:
 - НАКФФ (ЛП)
 
-**UnimLab.dll:**
-- РЖД ЦПАЦ (ЛП)
-
-Лаборатория не работает  
