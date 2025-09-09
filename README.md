@@ -130,20 +130,86 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 - ДаВинчиЛаб (ЛП)
 - РДЛ (ЛП)
 
+Данные лаборатории работают на базе МИС Инфоклиника и соответсвенно парсинг получение у них как и в клинике. 
+ 
+
 **Morfolab.dll:**
 - Морфолаб (ЛП)
+
+Лаборатория не работает. 
 
 **Litex.dll:**
 - Литех (ЛП)
 
+В процессе перехода на альфалаб. 
+
 **bion.dll:**
 - БИОН (ЛП)
 
+**Процесс:**  
+Логика почти такая же как у Ситилаба   
+Отправляется общий запрос на список заказов   
+```https://gost-63087.infoclinica.lan/int5/api/users/events/between/?from_ts=2025-09-03%2015:10:01&until_ts=2025-09-03%2016:16:04&result=updates```  
+где `from_ts=2025-09-03%2015:10:01` Дата из `filial_contr_links.LSSTARTDATE` обновляется раз в час, и `&until_ts=2025-09-03%2016:16:04`  текущее время.  
+
+Если на запрос есть какие то заказы, то уже отправляем индивидуальные для получения самих результатов по заказам.   
+```https://gost-63087.infoclinica.lan/int5/api/orders/result/8748000308/```  
+Тут идет сравнение даты из xml `"last_change":` с датой в `TREAT.LISTIMESTAMP` и если она больше то сохраняем результат и обновляем  `LISTIMESTAMP`  
+Для повторного получения результатов нужно:  
+1. Изменить дату в `filial_contr_links.LSSTARTDATE` на нужную  
+2. В таблице `TREAT` удалить дату в `LISTIMESTAMP`, чтобы мы смогли его скачать.  
+
+
 **Gemotest_soap.dll:**
-- Гемотест SOAP (ЛП)
+- Гемотест SOAP (ЛП)  
+
+**Процесс:**    
+Проверяется каждый заказ по которому не закрыт наряд, и отправляется запрос в лабораторию 
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:OdoctorControllerwsdl" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <urn:get_analysis_result soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+      <params xsi:type="urn:request_get_analysis_result">
+        <contractor xsi:type="xsd:string">10076</contractor>
+        <hash xsi:type="xsd:string">ec4b3d9b079a44d675b9f235991bb016538d0dda</hash>
+        <order_num xsi:type="xsd:string"/>
+        <ext_num xsi:type="xsd:string">1089049400</ext_num>
+      </params>
+    </urn:get_analysis_result>
+  </soapenv:Body>
+</soapenv:Envelope>
+``` 
+
+Идет проверка статуса результата, если статус 0, то результат не забираем иначе ид мы его сохраняем.  
+Потом в таблице `labexchange` есть триггер `GEMOTESTSOAP_NARADCLOSE_BIU`, который закрывает наряды при получении файла результатов и удачной его обработке.   
+После чего по заказу больше не будем отправлять запросы на результаты.   
+
+Для повторного получение результата нужно просто открыть наряд в `treat`.  
+
 
 **GemoHelp.dll:**
 - Гемохелп (ЛП)
+
+**Процесс:**     
+```
+https://gost-64105.infoclinica.lan/v1/last-modified-orders?access-token=тут указывается `filial_contr_links.extlabcode`  
+
+В самом теле запроса отправляем дату `{"date": "2025-09-08T18:14:10.059Z"}` из `filial_contr_links.LSSTARTDATE`  
+```
+Дата обновляется после получения результата.  
+
+
+В ответе придут внутренние идентификаторы лабы uid, потом по ним идет детальный запрос:  
+```
+https://gost-64105.infoclinica.lan/v1/order-detail?access-token=PDCLPeYTI0M$AaBix5DJMvAg
+```
+В теле запроса :  
+`{"uuid": "01992ce4-30a9-7287-9e21-8f8181e827e4", "onlyPDFForm": 0}`  
+Так же результаты сохраняем только со статусом 5 или 6.  
+
+Для повторного получения результатов можно изменить дату в `filial_contr_links.LSSTARTDATE`  
 
 **innovasystems.dll:**
 - ДНК-Диагностика (ЛП)
@@ -156,4 +222,5 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 
 **UnimLab.dll:**
 - РЖД ЦПАЦ (ЛП)
-```
+
+Лаборатория не работает  
