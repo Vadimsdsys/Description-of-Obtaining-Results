@@ -212,9 +212,27 @@ https://gost-64105.infoclinica.lan/v1/order-detail?access-token=PDCLPeYTI0M$AaBi
 ### innovasystems.dll:
 - ДНК-Диагностика (ЛП)
 
+Это некий аналог Альфалаба, у них так же очередь с результатами.   
+Изначально отправляем запрос:    
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/"><soapenv:Header/><soapenv:Body><tem:GetFilteredNextResult><tem:filter><HospitalCode>117</HospitalCode></tem:filter></tem:GetFilteredNextResult></soapenv:Body></soapenv:Envelope>
+```
+`HospitalCode`= `filial_contr_links.extlabcode` 
+После отправляем подтверждение 
+```
+Отправляем подтверждение о получении результата =  #9128802660
+=====Перед подтверждением====== > <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/"><soapenv:Header/><soapenv:Body><tem:ConfirmResultObtainment><tem:requestCode>9128802660</tem:requestCode></tem:ConfirmResultObtainment></soapenv:Body></soapenv:Envelope>
+=====Подтвердили получение====== > <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><ConfirmResultObtainmentResponse xmlns="http://tempuri.org/"/></s:Body></s:Envelope>
+```
+Для получение результатоа повторно нужно просить лабораторию, что бы переотправили.     
+
 ### dcli.dll:
-- ДЦЛИ (ЛП) (2 записи)
+- ДЦЛИ (ЛП)
+Тут результаты получаются через репликатор(берем все, что отдают), потом настроено перекидывание файла к ним в папку.  
+И уже идет стандартное подключение как на фтп к папке, и получение результата из нее.  
+
 
 ### LisNacph.dll:
 - НАКФФ (ЛП)
+По НАКФФ в логах к сожалению не пишутся точные запросы, глобальная логика как и в Альфалабе, забираем результаты которые имеются в очереди.   
 
