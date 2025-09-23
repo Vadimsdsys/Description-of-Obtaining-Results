@@ -148,7 +148,7 @@ Request: { "resourceType": "Parameters", "parameter": [   {    "name": "start", 
 Логика почти такая же как у Ситилаба   
 Отправляется общий запрос на список заказов   
 ```https://gost-63087.infoclinica.lan/int5/api/users/events/between/?from_ts=2025-09-03%2015:10:01&until_ts=2025-09-03%2016:16:04&result=updates```  
-где ``from_ts=2025-09-03%2015:10:01` — дата из `filial_contr_links.LSSTARTDATE` (обновляется раз в час), а `until_ts=2025-09-03%2016:16:04` — текущее время.  
+где `from_ts=2025-09-03%2015:10:01` — дата из `filial_contr_links.LSSTARTDATE` (обновляется раз в час), а `until_ts=2025-09-03%2016:16:04` — текущее время.  
 
 Если на запрос есть какие то заказы, то уже отправляем индивидуальные для получения самих результатов по заказам.   
 ```https://gost-63087.infoclinica.lan/int5/api/orders/result/8748000308/```  
